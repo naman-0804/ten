@@ -7,8 +7,7 @@ from flask_cors import CORS
 from flask_mail import Mail, Message
 from flask_admin import Admin
 from flask_admin.contrib.pymongo import ModelView
-# from datetime import datetime
-import datetime
+from datetime import datetime, timedelta
 import ssl
 import base64
 from pymongo import MongoClient
@@ -588,7 +587,6 @@ def add_leave():
     }
     db.leaves.insert_one(new_leave)
     return jsonify({'message': 'Leave added successfully'}), 200
-
 """
 Calendar Page - Events
 """
