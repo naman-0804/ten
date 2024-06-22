@@ -509,6 +509,7 @@ def get_employee_data():
         'name': user['name'],
         'email': user['email'],
         'password': user['password'],
+        'empid': user['empid'],
         'profileImage': base64.b64encode(user['profile_image']).decode('utf-8') if user.get('profile_image') else None
     }), 200
 
