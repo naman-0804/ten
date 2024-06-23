@@ -64,114 +64,42 @@ app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USE_SSL'] = False
 app.config['MAIL_USERNAME'] = 'rushideshmukh824@gmail.com'
-app.config['MAIL_PASSWORD'] = 'invz tkuz brhp crkf'
+app.config['MAIL_PASSWORD'] = 'ylpq bily fohq nphz'
 mail = Mail(app)
 
-class AdminDataForm(FlaskForm):
-    email = EmailField('Email', validators=[DataRequired()])
-    password = PasswordField('Password', validators=[DataRequired()])
-
-class EmployeeDataForm(FlaskForm):
-    name = StringField('Name', validators=[DataRequired()])
-    email = EmailField('Email', validators=[DataRequired()])
-    empid = StringField('Employee ID', validators=[DataRequired()])
-    password = PasswordField('Password', validators=[DataRequired()])
-    salary = DecimalField('Salary', validators=[DataRequired()])
-    category = SelectField('Category', choices=[('1', 'HR'), ('2', 'TECH')], validators=[DataRequired()])
-    profile = FileField('Profile Image')
-
-class LeavesForm(FlaskForm):
-    name = StringField('Name', validators=[DataRequired()])
-    employeeId = StringField('Employee ID', validators=[DataRequired()])
-    reason = StringField('Reason', validators=[DataRequired()])
-    numberOfDays = DecimalField('Number of Days', validators=[DataRequired()])
-    fromDate = DateField('From Date', validators=[DataRequired()], format='%Y-%m-%d')
-    toDate = DateField('To Date', validators=[DataRequired()], format='%Y-%m-%d')
-
-class ProjectListForm(FlaskForm):
-    name = StringField('Name', validators=[DataRequired()])
-
-class EventForm(FlaskForm):
-    title = StringField('Title', validators=[DataRequired()])
-    start = DateTimeField('Start', validators=[DataRequired()], format='%Y-%m-%d %H:%M:%S')
-    end = DateTimeField('End', validators=[DataRequired()], format='%Y-%m-%d %H:%M:%S')
-    allDay = BooleanField('All Day')
-
-class TagListForm(FlaskForm):
-    tag = StringField('Tag', validators=[DataRequired()])
-
-class ProjectForm(FlaskForm):
-    projectid = StringField('Project ID', validators=[DataRequired()])
-    projectName = StringField('Project Name', validators=[DataRequired()])
-    task = StringField('Task', validators=[DataRequired()])
-    tags = StringField('Tags', validators=[DataRequired()])
-    timeElapsed = DecimalField('Time Elapsed', validators=[DataRequired()])
-    date = DateField('Date', validators=[DataRequired()])
-    empid = StringField('Employee ID', validators=[DataRequired()])
-
-class MeetingForm(FlaskForm):
-    title = StringField('Title', validators=[DataRequired()])
-    meeting_code = StringField('Meeting Code', validators=[DataRequired()])
-    date = DateField('Date', format='%Y-%m-%d', validators=[DataRequired()])
-    time = TimeField('Time', format='%H:%M:%S', validators=[DataRequired()])
-    attendees = StringField('Attendees', validators=[DataRequired()])
-    description = StringField('Description', validators=[DataRequired()])
-
-class MeetingView(ModelView):
-    column_list = ('title', 'meeting_code', 'date', 'time', 'attendees', 'description')
-
-    def scaffold_form(self):
-        return MeetingForm
-
-    def on_model_change(self, form, model, is_created):
-        model['date'] = form.date.data.strftime('%Y-%m-%d')
-        model['time'] = form.time.data.strftime('%H:%M:%S')
-
-    def on_form_prefill(self, form, id):
-        meeting = self.get_meeting_data(id)
-        if meeting:
-            form.date.data = datetime.strptime(meeting['date'], '%Y-%m-%d').date()
-            form.time.data = datetime.strptime(meeting['time'], '%H:%M:%S').time()
-
-class AdminDataView(ModelView):
-    column_list = ('email', 'password')
-    form = AdminDataForm
-
-class EmployeeDataView(ModelView):
-    column_list = ('name', 'email', 'empid', 'password', 'salary', 'category', 'profile')
-    form = EmployeeDataForm
-
-class LeavesView(ModelView):
-    column_list = ('name', 'employeeId', 'reason', 'numberOfDays', 'fromDate', 'toDate')
-    form = LeavesForm
-
-class ProjectListView(ModelView):
-    column_list = ('name',)
-    form = ProjectListForm
-
-class TagListView(ModelView):
-    column_list = ('tag',)
-    form = TagListForm
-
-class ProjectView(ModelView):
-    column_list = ('projectName', 'task', 'tags', 'timeElapsed', 'date', 'empid')
-    form = ProjectForm
-
-class EventView(ModelView):
-    column_list = ('title', 'start', 'end', 'allDay')
-    form = EventForm
-
-admin = Admin(app, name='Admin Panel', template_mode='bootstrap3')
-admin.add_view(AdminDataView(db.admin_data, 'Admin Data'))
-admin.add_view(EmployeeDataView(db.emp_data, 'Employee Data'))
-admin.add_view(LeavesView(db.leaves, 'Leaves'))
-admin.add_view(ProjectListView(db.project_list, 'Project List'))
-admin.add_view(TagListView(db.tag_list, 'Tag List'))
-admin.add_view(ProjectView(db.projects, 'Projects Details'))
-admin.add_view(EventView(db.events, 'Events'))
-admin.add_view(MeetingView(db.meeting, 'Meetings'))
+# Initialization code continued...
 
 def initialize_db():
+    # Check if collections already exist
+    collections = db.list_collection_names()
+
+    # If collections don't exist, create them
+    if 'admin_data' not in collections:
+        db.create_collection('admin_data')
+    if 'emp_data' not in collections:
+        db.create_collection('emp_data')
+    if 'leaves' not in collections:
+        db.create_collection('leaves')
+    if 'project_list' not in collections:
+        db.create_collection('project_list')
+    if 'tag_list' not in collections:
+        db.create_collection('tag_list')
+    if 'projects' not in collections:
+        db.create_collection('projects')
+    if 'events' not in collections:
+        db.create_collection('events')
+    if 'meeting' not in collections:
+        db.create_collection('meeting')
+
+    # Create indexes
+    db.admin_data.create_index('email', unique=True)
+    db.emp_data.create_index('email', unique=True)
+    db.emp_data.create_index('empid', unique=True)
+    # Removed the unique index for leaves collection
+    db.project_list.create_index('name', unique=True)
+    db.events.create_index('title', unique=True)
+
+    initialize_db()
     # Check if collections already exist
     collections = db.list_collection_names()
 
