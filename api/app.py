@@ -67,7 +67,109 @@ app.config['MAIL_USERNAME'] = 'rushideshmukh824@gmail.com'
 app.config['MAIL_PASSWORD'] = 'ylpq bily fohq nphz'
 mail = Mail(app)
 
-# Initialization code continued...
+class AdminDataForm(FlaskForm):
+    email = EmailField('Email', validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired()])
+
+class EmployeeDataForm(FlaskForm):
+    name = StringField('Name', validators=[DataRequired()])
+    email = EmailField('Email', validators=[DataRequired()])
+    empid = StringField('Employee ID', validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    salary = DecimalField('Salary', validators=[DataRequired()])
+    category = SelectField('Category', choices=[('1', 'HR'), ('2', 'TECH')], validators=[DataRequired()])
+    profile = FileField('Profile Image')
+
+class LeavesForm(FlaskForm):
+    name = StringField('Name', validators=[DataRequired()])
+    employeeId = StringField('Employee ID', validators=[DataRequired()])
+    reason = StringField('Reason', validators=[DataRequired()])
+    numberOfDays = DecimalField('Number of Days', validators=[DataRequired()])
+    fromDate = DateField('From Date', validators=[DataRequired()], format='%Y-%m-%d')
+    toDate = DateField('To Date', validators=[DataRequired()], format='%Y-%m-%d')
+
+class ProjectListForm(FlaskForm):
+    name = StringField('Name', validators=[DataRequired()])
+
+class EventForm(FlaskForm):
+    title = StringField('Title', validators=[DataRequired()])
+    start = DateTimeField('Start', validators=[DataRequired()], format='%Y-%m-%d %H:%M:%S')
+    end = DateTimeField('End', validators=[DataRequired()], format='%Y-%m-%d %H:%M:%S')
+    allDay = BooleanField('All Day')
+
+class TagListForm(FlaskForm):
+    tag = StringField('Tag', validators=[DataRequired()])
+
+class ProjectForm(FlaskForm):
+    projectid = StringField('Project ID', validators=[DataRequired()])
+    projectName = StringField('Project Name', validators=[DataRequired()])
+    task = StringField('Task', validators=[DataRequired()])
+    tags = StringField('Tags', validators=[DataRequired()])
+    timeElapsed = DecimalField('Time Elapsed', validators=[DataRequired()])
+    date = DateField('Date', validators=[DataRequired()])
+    empid = StringField('Employee ID', validators=[DataRequired()])
+
+class MeetingForm(FlaskForm):
+    title = StringField('Title', validators=[DataRequired()])
+    meeting_code = StringField('Meeting Code', validators=[DataRequired()])
+    date = DateField('Date', format='%Y-%m-%d', validators=[DataRequired()])
+    time = TimeField('Time', format='%H:%M:%S', validators=[DataRequired()])
+    attendees = StringField('Attendees', validators=[DataRequired()])
+    description = StringField('Description', validators=[DataRequired()])
+
+class MeetingView(ModelView):
+    column_list = ('title', 'meeting_code', 'date', 'time', 'attendees', 'description')
+
+    def scaffold_form(self):
+        return MeetingForm
+
+    def on_model_change(self, form, model, is_created):
+        model['date'] = form.date.data.strftime('%Y-%m-%d')
+        model['time'] = form.time.data.strftime('%H:%M:%S')
+
+    def on_form_prefill(self, form, id):
+        meeting = self.get_meeting_data(id)
+        if meeting:
+            form.date.data = datetime.strptime(meeting['date'], '%Y-%m-%d').date()
+            form.time.data = datetime.strptime(meeting['time'], '%H:%M:%S').time()
+
+class AdminDataView(ModelView):
+    column_list = ('email', 'password')
+    form = AdminDataForm
+
+class EmployeeDataView(ModelView):
+    column_list = ('name', 'email', 'empid', 'password', 'salary', 'category', 'profile')
+    form = EmployeeDataForm
+
+class LeavesView(ModelView):
+    column_list = ('name', 'employeeId', 'reason', 'numberOfDays', 'fromDate', 'toDate')
+    form = LeavesForm
+
+class ProjectListView(ModelView):
+    column_list = ('name',)
+    form = ProjectListForm
+
+class TagListView(ModelView):
+    column_list = ('tag',)
+    form = TagListForm
+
+class ProjectView(ModelView):
+    column_list = ('projectName', 'task', 'tags', 'timeElapsed', 'date', 'empid')
+    form = ProjectForm
+
+class EventView(ModelView):
+    column_list = ('title', 'start', 'end', 'allDay')
+    form = EventForm
+
+admin = Admin(app, name='Admin Panel', template_mode='bootstrap3')
+admin.add_view(AdminDataView(db.admin_data, 'Admin Data'))
+admin.add_view(EmployeeDataView(db.emp_data, 'Employee Data'))
+admin.add_view(LeavesView(db.leaves, 'Leaves'))
+admin.add_view(ProjectListView(db.project_list, 'Project List'))
+admin.add_view(TagListView(db.tag_list, 'Tag List'))
+admin.add_view(ProjectView(db.projects, 'Projects Details'))
+admin.add_view(EventView(db.events, 'Events'))
+admin.add_view(MeetingView(db.meeting, 'Meetings'))
 
 def initialize_db():
     # Check if collections already exist
