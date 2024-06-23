@@ -25,7 +25,7 @@ from datetime import timedelta
 """
 Database Setup
 """
-app = Flask(__name__)
+app = Flask(_name_)
 app.secret_key = 'your_secret_key'
 
 app.config['SESSION_TYPE'] = 'filesystem'
@@ -64,7 +64,7 @@ app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USE_SSL'] = False
 app.config['MAIL_USERNAME'] = 'rushideshmukh824@gmail.com'
-app.config['MAIL_PASSWORD'] = 'ylpq bily fohq nphz'
+app.config['MAIL_PASSWORD'] = 'invz tkuz brhp crkf'
 mail = Mail(app)
 
 class AdminDataForm(FlaskForm):
@@ -172,36 +172,6 @@ admin.add_view(EventView(db.events, 'Events'))
 admin.add_view(MeetingView(db.meeting, 'Meetings'))
 
 def initialize_db():
-    # Check if collections already exist
-    collections = db.list_collection_names()
-
-    # If collections don't exist, create them
-    if 'admin_data' not in collections:
-        db.create_collection('admin_data')
-    if 'emp_data' not in collections:
-        db.create_collection('emp_data')
-    if 'leaves' not in collections:
-        db.create_collection('leaves')
-    if 'project_list' not in collections:
-        db.create_collection('project_list')
-    if 'tag_list' not in collections:
-        db.create_collection('tag_list')
-    if 'projects' not in collections:
-        db.create_collection('projects')
-    if 'events' not in collections:
-        db.create_collection('events')
-    if 'meeting' not in collections:
-        db.create_collection('meeting')
-
-    # Create indexes
-    db.admin_data.create_index('email', unique=True)
-    db.emp_data.create_index('email', unique=True)
-    db.emp_data.create_index('empid', unique=True)
-    # Removed the unique index for leaves collection
-    db.project_list.create_index('name', unique=True)
-    db.events.create_index('title', unique=True)
-
-    initialize_db()
     # Check if collections already exist
     collections = db.list_collection_names()
 
@@ -890,5 +860,5 @@ def reset_password():
 #
 #     return jsonify({'message': 'Password reset email sent successfully'}), 200
 
-if __name__ == '__main__':
+if _name_ == '_main_':
     app.run(host='0.0.0.0', port=5000, debug=True)
