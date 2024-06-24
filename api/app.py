@@ -21,7 +21,8 @@ import random
 from flask_pymongo import PyMongo
 from flask_wtf import FlaskForm
 from datetime import timedelta
-
+import datetime
+from datetime import date
 """
 Database Setup
 """
@@ -695,7 +696,7 @@ def add_project_data():
     timeElapsed = data.get('timeElapsed')
     # empid = data.get('empid')
     # current_date = datetime.now().strftime('%Y-%m-%d')
-    current_date = datetime.date.today()
+    current_date = date.today()
     print(current_date)
     # To fetch empid of logged in employee
     if 'logged_in' not in session or not session['logged_in']:
