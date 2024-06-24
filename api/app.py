@@ -694,32 +694,25 @@ def add_project_data():
     projectName = data.get('projectName')
     tags = data.get('tags')
     timeElapsed = data.get('timeElapsed')
-    # empid = data.get('empid')
-    # current_date = datetime.now().strftime('%Y-%m-%d')
-    current_date = date.today()
+    current_date = datetime.date.today()
     print(current_date)
-    # To fetch empid of logged in employee
-    if 'logged_in' not in session or not session['logged_in']:
-        return jsonify({'error': 'Not logged in'}), 401
-    empid = session['empid']
-    user = db.emp_data.find_one({'empid': empid})
-    if not user:
-        return jsonify({'error': 'Employee not found'}), 404
+    empid = session.get('empid')
+    
+    if not empid:
+        return jsonify({'error': 'Employee not logged in'}), 401
 
-    if not all([task, projectName, tags, timeElapsed, empid]):
-        return jsonify({'error': 'Missing something...'}), 400
-
-    project_data = {
-        'task': task,
+    new_project_data = {
         'projectName': projectName,
+        'task': task,
         'tags': tags,
         'timeElapsed': timeElapsed,
         'date': current_date,
         'empid': empid
     }
 
-    db.projects.insert_one(project_data)
-    return jsonify({'message': 'Project data added successfully!'}), 201
+    db.projects.insert_one(new_project_data)
+    return jsonify({'message': 'Project data added successfully'}), 201
+
 
 """
 TimeTracker - Display worked project details
