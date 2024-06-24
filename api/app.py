@@ -687,6 +687,7 @@ def get_projects():
 """
 TimeTracker - Add Project To Databaase
 """
+
 @app.route('/auth/add_project_data', methods=['POST'])
 def add_project_data():
     data = request.json
@@ -694,7 +695,7 @@ def add_project_data():
     projectName = data.get('projectName')
     tags = data.get('tags')
     timeElapsed = data.get('timeElapsed')
-    current_date = datetime.date.today()
+    current_date = datetime.now()
     print(current_date)
     empid = session.get('empid')
     
