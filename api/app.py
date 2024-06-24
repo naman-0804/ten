@@ -813,7 +813,7 @@ def forgot_password():
 
     user = db.emp_data.find_one({'email': email})
     if not user:
-        print(f"Email not fount in database for forgot password: {email}")
+        print(f"Email not found in database for forgot password: {email}")
         return jsonify({'error': 'Employee not found'}), 404
 
     otp = ''.join(random.choices(string.digits, k=6))
@@ -825,7 +825,6 @@ def forgot_password():
 
     return jsonify({'message': 'OTP sent successfully'}), 200
 
-# Route for resetting password
 @app.route('/auth/resetpassword', methods=['POST', 'OPTIONS'])
 def reset_password():
     if request.method == 'OPTIONS':
