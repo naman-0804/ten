@@ -695,7 +695,7 @@ def add_project_data():
     projectName = data.get('projectName')
     tags = data.get('tags')
     timeElapsed = data.get('timeElapsed')
-    current_date = datetime.now()
+    current_date = datetime.datetime.now()
     print(current_date)
     empid = session.get('empid')
     
