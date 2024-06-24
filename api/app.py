@@ -63,8 +63,8 @@ app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USE_SSL'] = False
-app.config['MAIL_USERNAME'] = 'rushideshmukh824@gmail.com'
-app.config['MAIL_PASSWORD'] = 'invz tkuz brhp crkf'
+app.config['MAIL_USERNAME'] = 'namansrivastava1608@gmail.com'
+app.config['MAIL_PASSWORD'] = 'dsgq aoab saut vutu'
 mail = Mail(app)
 
 class AdminDataForm(FlaskForm):
@@ -819,7 +819,7 @@ def forgot_password():
     otp = ''.join(random.choices(string.digits, k=6))
     db.emp_data.update_one({'email': email}, {'$set': {'otp': otp}})
 
-    msg = Message('OTP for Password Reset', sender='rushideshmukh824@gmail.com', recipients=[email])
+    msg = Message('OTP for Password Reset', sender='namansrivastava1608@gmail.com', recipients=[email])
     msg.body = f'Your OTP for password reset is: {otp}'
     mail.send(msg)
 
