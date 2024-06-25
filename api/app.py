@@ -721,9 +721,8 @@ TimeTracker - Display worked project details
 @app.route('/auth/get_employee_projects', methods=['GET'])
 def get_employee_projects():
     projects = db.projects.find()
-    project_list = [{'projectid': project['projectid'], 'projectName': project['projectName'], 'task': project['task'],
+    project_list = [{'projectName': project['projectName'], 'task': project['task'],
                      'tags': project['tags'], 'timeElapsed': project['timeElapsed']} for project in projects]
-
     return jsonify({'projects': project_list}), 200
 
 """
