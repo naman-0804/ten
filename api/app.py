@@ -52,10 +52,6 @@ client = MongoClient(
     connectTimeoutMS=30000
 )
 db = client.employeee
-coll = db['project']
-
-# Drop the index on projectid
-coll.drop_index('projectid_1')
 # Update this with your MongoDB URI
 # client = MongoClient('mongodb+srv://admin:priya@cluster0.l6dotpe.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
 # db = client['employeee']
