@@ -730,15 +730,13 @@ TimeTracker Page - To Update Project - Start / Resume and update in database
 @app.route('/auth/update_project_data/<index>', methods=['POST'])
 def update_project_data(index):
     data = request.json
-    projectid = data.get('projectid')
     task = data.get('task')
     projectName = data.get('projectName')
     tags = data.get('tags')
     timeElapsed = data.get('timeElapsed')
 
     result = db.projects.update_one(
-        {'projectid': index},
-        {'$set': {'projectid': projectid, 'task': task, 'projectName': projectName, 'tags': tags, 'timeElapsed': timeElapsed}}
+        {'$set': {'task': task, 'projectName': projectName, 'tags': tags, 'timeElapsed': timeElapsed}}
     )
 
     if result.modified_count > 0:
