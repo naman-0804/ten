@@ -102,7 +102,6 @@ class TagListForm(FlaskForm):
     tag = StringField('Tag', validators=[DataRequired()])
 
 class ProjectForm(FlaskForm):
-    projectid = StringField('Project ID', validators=[DataRequired()])
     projectName = StringField('Project Name', validators=[DataRequired()])
     task = StringField('Task', validators=[DataRequired()])
     tags = StringField('Tags', validators=[DataRequired()])
