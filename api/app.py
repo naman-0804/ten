@@ -676,7 +676,7 @@ def get_tag_list():
 def get_projects():
     try:
         projects = db.project_list.find()
-        project_list = [{'id': str(project['_id']), 'name': project['name']} for project in projects]
+        project_list = [{'name': project['name']} for project in projects]
         return jsonify(project_list), 200
     except Exception as e:
         print("Error fetching events:", e)
