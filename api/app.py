@@ -173,7 +173,7 @@ admin.add_view(MeetingView(db.meeting, 'Meetings'))
 def initialize_db():
     # Check if collections already exist
     collections = db.list_collection_names()
-
+    
     # If collections don't exist, create them
     if 'admin_data' not in collections:
         db.create_collection('admin_data')
@@ -191,12 +191,12 @@ def initialize_db():
         db.create_collection('events')
     if 'meeting' not in collections:
         db.create_collection('meeting')
-
+    
     # Create indexes
     db.admin_data.create_index('email', unique=True)
     db.emp_data.create_index('email', unique=True)
     db.emp_data.create_index('empid', unique=True)
-
+    db.projects.create_index([('projectid', pymongo.ASCENDING)], unique=True)
     # Drop the employeeId_1 index if it exists
     index_info = db.leaves.index_information()
     if 'employeeId_1' in index_info:
