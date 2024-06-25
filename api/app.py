@@ -26,7 +26,7 @@ from datetime import date
 """
 Database Setup
 """
-app = Flask(__name__)
+app = Flask(_name_)
 app.secret_key = 'your_secret_key'
 
 app.config['SESSION_TYPE'] = 'filesystem'
@@ -52,6 +52,7 @@ client = MongoClient(
     connectTimeoutMS=30000
 )
 db = client.employeee
+
 # Update this with your MongoDB URI
 # client = MongoClient('mongodb+srv://admin:priya@cluster0.l6dotpe.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
 # db = client['employeee']
@@ -101,6 +102,7 @@ class TagListForm(FlaskForm):
     tag = StringField('Tag', validators=[DataRequired()])
 
 class ProjectForm(FlaskForm):
+    projectid = StringField('Project ID', validators=[DataRequired()])
     projectName = StringField('Project Name', validators=[DataRequired()])
     task = StringField('Task', validators=[DataRequired()])
     tags = StringField('Tags', validators=[DataRequired()])
@@ -173,7 +175,7 @@ admin.add_view(MeetingView(db.meeting, 'Meetings'))
 def initialize_db():
     # Check if collections already exist
     collections = db.list_collection_names()
-    
+
     # If collections don't exist, create them
     if 'admin_data' not in collections:
         db.create_collection('admin_data')
@@ -191,21 +193,20 @@ def initialize_db():
         db.create_collection('events')
     if 'meeting' not in collections:
         db.create_collection('meeting')
-    
+
     # Create indexes
     db.admin_data.create_index('email', unique=True)
     db.emp_data.create_index('email', unique=True)
     db.emp_data.create_index('empid', unique=True)
+
     # Drop the employeeId_1 index if it exists
     index_info = db.leaves.index_information()
     if 'employeeId_1' in index_info:
         db.leaves.drop_index('employeeId_1')
-    index_inf = db.leaves.index_information()
-    if 'projectid_1' in index_info:
-        db.leaves.drop_index('projectid_1')
+
     # Create the employeeId index
     db.leaves.create_index('employeeId')
-    
+
     db.project_list.create_index('name', unique=True)
     db.events.create_index('title', unique=True)
 initialize_db()
@@ -676,7 +677,7 @@ def get_tag_list():
 def get_projects():
     try:
         projects = db.project_list.find()
-        project_list = [{'name': project['name']} for project in projects]
+        project_list = [{'id': str(project['_id']), 'name': project['name']} for project in projects]
         return jsonify(project_list), 200
     except Exception as e:
         print("Error fetching events:", e)
@@ -720,8 +721,9 @@ TimeTracker - Display worked project details
 @app.route('/auth/get_employee_projects', methods=['GET'])
 def get_employee_projects():
     projects = db.projects.find()
-    project_list = [{'projectName': project['projectName'], 'task': project['task'],
+    project_list = [{'projectid': project['projectid'], 'projectName': project['projectName'], 'task': project['task'],
                      'tags': project['tags'], 'timeElapsed': project['timeElapsed']} for project in projects]
+
     return jsonify({'projects': project_list}), 200
 
 """
@@ -730,13 +732,15 @@ TimeTracker Page - To Update Project - Start / Resume and update in database
 @app.route('/auth/update_project_data/<index>', methods=['POST'])
 def update_project_data(index):
     data = request.json
+    projectid = data.get('projectid')
     task = data.get('task')
     projectName = data.get('projectName')
     tags = data.get('tags')
     timeElapsed = data.get('timeElapsed')
 
     result = db.projects.update_one(
-        {'$set': {'task': task, 'projectName': projectName, 'tags': tags, 'timeElapsed': timeElapsed}}
+        {'projectid': index},
+        {'$set': {'projectid': projectid, 'task': task, 'projectName': projectName, 'tags': tags, 'timeElapsed': timeElapsed}}
     )
 
     if result.modified_count > 0:
@@ -859,5 +863,5 @@ def reset_password():
 #
 #     return jsonify({'message': 'Password reset email sent successfully'}), 200
 
-if __name__ == '__main__':
+if _name_ == '_main_':
     app.run(host='0.0.0.0', port=5000, debug=True)
