@@ -196,15 +196,16 @@ def initialize_db():
     db.admin_data.create_index('email', unique=True)
     db.emp_data.create_index('email', unique=True)
     db.emp_data.create_index('empid', unique=True)
-    db.projects.create_index([('projectid', PyMongo.ASCENDING)], unique=True)
     # Drop the employeeId_1 index if it exists
     index_info = db.leaves.index_information()
     if 'employeeId_1' in index_info:
         db.leaves.drop_index('employeeId_1')
-
+    index_inf = db.leaves.index_information()
+    if 'projectid_1' in index_info:
+        db.leaves.drop_index('projectid_1')
     # Create the employeeId index
     db.leaves.create_index('employeeId')
-
+    
     db.project_list.create_index('name', unique=True)
     db.events.create_index('title', unique=True)
 initialize_db()
